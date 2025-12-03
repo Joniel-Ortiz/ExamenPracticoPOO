@@ -22,7 +22,6 @@ public class Controlador {
 
   }
 
-
   //By: Joniel Ortiz
   //Permite agregar un nuevo jugador a la lista de jugadores
   public void agregarJugador (String nombre) {
@@ -54,41 +53,6 @@ public class Controlador {
     Tablero tablero = new Tablero();
     tablero.colocarMinas(10);
     vista.mostrarTablero(tablero.getCasillasCompletas());
-  }
-
-  public void esVisible(Tablero tablero) {
-
-  }
-
-  // CRISTIAN: Método para inicializar el tablero sin mostrarlo
-  // Este método crea el tablero una sola vez y evita que se muestre
-  // automáticamente.
-  public void inicializarTablero(int minas) {
-    this.tablero = new Tablero();
-    tablero.colocarMinas(minas);
-  }
-
-  // CRISTIAN: Método para revelar una casilla del tablero
-  // Uso: la vista llama a este método cuando el jugador marca una casilla.
-  public boolean revelarCasilla(int fila, int columna) {
-    if (tablero == null)
-      return false;
-    return tablero.revelar(fila, columna);
-  }
-
-  // CRISTIAN: Método para pedir a la vista que muestre SOLO lo revelado)
-  // Evita mostrar el tablero completo desde el inicio.
-  public void actualizarVista() {
-    if (vista != null && tablero != null) {
-      vista.mostrarTablero(tablero.getCasillasCompletas());
-    }
-  }
-
-  // (CRISTIAN: Método que verifica si el jugador ganó)
-  public boolean juegoGanado() {
-    if (tablero == null)
-      return false;
-    return tablero.verificarVictoria();
   }
 
   public Vista getVista() {

@@ -31,7 +31,6 @@ public class Vista {
         case 1:
           String nombreJugador = pedirDatosJugador();
           controlador.agregarJugador(nombreJugador);
-          controlador.tableroAVista();
           break;
         case 2:
           System.out.println("");
@@ -52,7 +51,7 @@ public class Vista {
   }
 
   // By: Joniel Ortiz
-  // Metodo que pide el nombre del jugador que jugará
+  // Pide el nombre del jugador que va a jugar
   public String pedirDatosJugador() {
     System.out.print("Introduce tu nombre: ");
     String nombre = sc.next();
@@ -60,6 +59,8 @@ public class Vista {
     return nombre;
   }
 
+  //By: Joniel Ortiz
+  //Muesta la lista de jugadores que existen
   public void mostrarListaJugadores(List<Jugador> listaJugadores) {
     System.out.println("");
     System.out.println("------------------Lista de jugadores------------------");
@@ -100,94 +101,6 @@ public class Vista {
     System.out.print("Escoge la casilla que deseas, por ejemplo (A5): ");
     String casilla = sc.next();
     return casilla;
-  }
-
-  // Cuenta las casillas que aún no han sido descubiertas
-  public int contarMinasRestantes(String[][] tableroVisible) {
-    int minasOcultas = 0;
-
-    for (int i = 1; i < tableroVisible.length; i++) {
-      for (int j = 1; j < tableroVisible.length; j++) {
-        if (tableroVisible[i][j].equals("[?]")) {
-          minasOcultas++;
-        }
-      }
-    }
-    return minasOcultas;
-  }
-
-  // Coloca minas en posiciones aleatorias del tablero real
-
-  // Transformo las letras (A-J) en valores numéricos (1-10)
-  public int transformarCoordenada(char letra) {
-    return (letra - 'A') + 1;
-  }
-
-  // Contar cuántas minas hay alrededor de una casilla
-  public int contarMinasVecinas(String[][] tablero, int fila, int columna) {
-    int minas = 0;
-    for (int i = fila - 1; i <= fila + 1; i++) {
-      for (int j = columna - 1; j <= columna + 1; j++) {
-        if (i > 0 && i < tablero.length && j > 0 && j < tablero.length) {
-          if (tablero[i][j].equals("[X]")) {
-            minas++;
-          }
-        }
-      }
-    }
-    return minas;
-  }
-
-  // Destapa recursivamente casillas seguras
-  public void destaparCasillas(String[][] tablero, String[][] tableroVisible, int fila, int columna) {
-
-    if (!tableroVisible[fila][columna].equals("[?]")) {
-      return;
-    }
-
-    int minasCerca = contarMinasVecinas(tablero, fila, columna);
-
-    // Si no hay minas cerca, pongo [V] (vacío)
-    if (minasCerca == 0) {
-      tableroVisible[fila][columna] = "[V]";
-    } else {
-      tableroVisible[fila][columna] = "[" + minasCerca + "]";
-    }
-
-    if (minasCerca > 0) {
-      return;
-    }
-
-    for (int i = fila - 1; i <= fila + 1; i++) {
-      for (int j = columna - 1; j <= columna + 1; j++) {
-        if (i > 0 && i < tablero.length && j > 0 && j < tablero.length) {
-          destaparCasillas(tablero, tableroVisible, i, j);
-        }
-      }
-    }
-  }
-
-  // Revisa que ya no queden casillas ocultas
-  public boolean verificarVictoria(String[][] tableroVisible) {
-    for (int i = 1; i < tableroVisible.length; i++) {
-      for (int j = 1; j < tableroVisible.length; j++) {
-        if (tableroVisible[i][j].equals("[?]")) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
-  // Cuando pierdo o gano, revelo todas las minas
-  public void mostrarMinas(String[][] tablero, String[][] tableroVisible) {
-    for (int i = 1; i < tablero.length; i++) {
-      for (int j = 1; j < tablero.length; j++) {
-        if (tablero[i][j].equals("[X]")) {
-          tableroVisible[i][j] = "[X]";
-        }
-      }
-    }
   }
 
   public void setControlador(Controlador controlador) {
