@@ -16,7 +16,6 @@ public class Vista {
   // By: Joniel Ortiz
   // Metodo que mostrara un menú interactivo al usuario
   public void menuPrincipal() {
-
     boolean finalizar = false;
 
     while (!finalizar) {
@@ -31,8 +30,7 @@ public class Vista {
       switch (opcion) {
         case 1:
           String nombreJugador = pedirDatosJugador();
-          controlador.agregarJugador(nombreJugador);
-          mostrarTablero(controlador.tableroAVista());
+          controlador.iniciarJuego(nombreJugador);
           break;
         case 2:
           System.out.println("");
@@ -57,7 +55,6 @@ public class Vista {
   public String pedirDatosJugador() {
     System.out.print("Introduce tu nombre: ");
     String nombre = sc.next();
-    System.out.println("\nJugador creado con exito!");
     return nombre;
   }
 
@@ -74,41 +71,62 @@ public class Vista {
 
   // By: Joniel Ortiz
   // Metodo que muestra el tablero creado en el main
-  public void mostrarTablero(Casilla[][] casillas) throws RuntimeException{
-    try {
-      System.out.println("");
-      for (int i = 0; i < casillas.length; i++) { // Filas del Tablero
-        for (int j = 0; j < casillas.length; j++) { // Columnas del Tablero
-          char letras = (char) ('A' + i - 1); // Empieza con la letra A y termina en la letra J
-          if (i > 0 && j == 0) {
-            System.out.print("[" + letras + "]"); // Imprime las letras en la columna 0
-          } else if (i == 0 && j > 0) {
-            System.out.print("[" + j + "]"); // Imprime los numeros de la fila 0
-          } else if (i == 0 && j == 0) {
-            System.out.print("[ ]"); // Imprime la fila 0 y columna 0 vacia
-          } else {
-            System.out.print(casillas[i][j].getSimbolo()); // Imprime los espacios vacios
+  public void mostrarTablero(Casilla[][] casillas) throws RuntimeException {
+
+    boolean juegoActivo = true;
+    
+
+    while (juegoActivo) {
+      try {
+        System.out.println("");
+        for (int i = 0; i < casillas.length; i++) { // Filas del Tablero
+          for (int j = 0; j < casillas.length; j++) { // Columnas del Tablero
+            char letras = (char) ('A' + i - 1); // Empieza con la letra A y termina en la letra J
+            if (i > 0 && j == 0) {
+              System.out.print("[" + letras + "]"); // Imprime las letras en la columna 0
+            } else if (i == 0 && j > 0) {
+              System.out.print("[" + j + "]"); // Imprime los numeros de la fila 0
+            } else if (i == 0 && j == 0) {
+              System.out.print("[ ]"); // Imprime la fila 0 y columna 0 vacia
+            } else {
+              System.out.print(casillas[i][j].getSimbolo()); // Imprime los espacios vacios
+            }
           }
+          System.out.println(""); // Salto de linea
         }
-        System.out.println(""); // Salto de linea
-      }
-      String coordenadaCasilla = pedirCasilla(); // Almacena el dato que introdujo el usuario en la variable
-                                                 // "coodenadaCasilla"
-      int posicionX = controlador.codigoAsciiANumero(coordenadaCasilla);
-      String posicionY = coordenadaCasilla.substring(1);
-      int posicionYInt = Integer.parseInt(posicionY);
-      if (controlador.esVisible(coordenadaCasilla)) {
-        casillas[posicionX][posicionYInt].setSimbolo("[ }");
-      }
-      if (casillas[posicionX][posicionYInt].isMina()) {
-        casillas[posicionX][posicionYInt].setSimbolo("[X]");
-      }
+        String coordenadaCasilla = pedirCasilla(); // Almacena el dato que introdujo el usuario en la variable
+                                                   // "coodenadaCasilla"
+        int posicionX = controlador.codigoAsciiANumero(coordenadaCasilla);
+        String posicionY = coordenadaCasilla.substring(1);
+        int posicionYInt = Integer.parseInt(posicionY);
+        if (controlador.esVisible(coordenadaCasilla)) {
+          casillas[posicionX][posicionYInt].setSimbolo("[ ]");
+        }
+        if (casillas[posicionX][posicionYInt].isMina()) {
+          casillas[posicionX][posicionYInt].setSimbolo("[X]");
+          juegoActivo = false;
+          System.out.println("\nPerdiste!, intentalo denuevo.");
+          menuPrincipal();
+        }
 
-      mostrarTablero(casillas);
-    } catch (Exception e) {
-      throw new InputMismatchException("Error, no puedes poner diferentes tipo de datos");
+        boolean respuesta = controlador.manejarVerificarVictoria();
+        if (!respuesta) {
+          juegoActivo = false;
+          System.out.println("\nGanaste!");
+          menuPrincipal();
+        }
+      } catch (Exception e) {
+        System.out.println("\nError!, no puedes escribir diferentes tipos de datos");;
+      }
     }
+  }
 
+  //By: Joniel Ortiz
+  //Metodo que pide el tamanio del tablero al jugador
+  public int pedirTamanioTablero () {
+    System.out.print("Introduce el tamanio que deseas del tablero: ");
+    int tamanio = sc.nextInt();
+    return tamanio;
   }
 
   // By: Joniel Ortiz
@@ -199,6 +217,7 @@ public class Vista {
     return true;
   }
 
+  // By:LASTRA DYLLAN 
   // Cuando pierdo o gano, revelo todas las minas
   public void mostrarMinas(String[][] tablero, String[][] tableroVisible) {
     for (int i = 1; i < tablero.length; i++) {
@@ -213,4 +232,11 @@ public class Vista {
   public void setControlador(Controlador controlador) {
     this.controlador = controlador;
   }
-}
+
+  // CRISTIAN: Método para mostrar mensajes desde el controlador
+  public void mostrarMensaje(String mensaje) {
+    System.out.println("\n" + mensaje + "\n");
+  }
+} 
+
+
